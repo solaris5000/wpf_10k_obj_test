@@ -67,7 +67,7 @@ namespace WpfApp1
                 rect.Height = 15;
                 rect.Fill = new SolidColorBrush(Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)));
 
-                double x = rand.Next(-2100, 2100);
+                double x = rand.Next(-4100, 4100);
                 double y = rand.Next(0, 100);
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
@@ -85,10 +85,10 @@ namespace WpfApp1
                     
                 }
                 else
-                if (x > 500)
+                if (x > 588)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
-                    tmpR.Insert(-1 * x, (rect.Width, y, Color.FromArgb(255, 110, 110, 110), -1 * x));
+                    tmpR.Insert(-1 * x, (rect.Width, y, Color.FromArgb(255, 110, 110, 110), -1 * x + 588));
 
                 }
                 else
@@ -165,7 +165,7 @@ namespace WpfApp1
 
                 }
                 else
-                if (x > 500)
+                if (x > 588)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
                     
@@ -173,7 +173,7 @@ namespace WpfApp1
                     rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), e.OldValue));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
-                    this.Title = e.OldValue.ToString();
+                    //this.Title = e.OldValue.ToString();
                 }
 
                 //if (child.CacheMode == null)
@@ -228,7 +228,7 @@ namespace WpfApp1
                     UIetemp.Height = 15;
                     UIetemp.Fill = new SolidColorBrush(result.Item3);
                     //this.Title = result.ToString();
-                    Canvas.SetLeft(UIetemp, delta);
+                    Canvas.SetLeft(UIetemp, 0+ e.NewValue - resulta.Item4);
                     Canvas.SetTop(UIetemp, result.Item2);
                     rframe.Children.Add(UIetemp);
 
@@ -252,7 +252,7 @@ namespace WpfApp1
                     UIetemp.Height = 15;
                     UIetemp.Fill = new SolidColorBrush(result.Item3);
 
-                    Canvas.SetLeft(UIetemp, 500-delta);
+                    Canvas.SetLeft(UIetemp, 588- e.NewValue + resulta.Item4);
                     Canvas.SetTop(UIetemp, result.Item2);
                     UIetemp.Visibility = Visibility.Visible;
                     UIetemp.CacheMode = new BitmapCache();
@@ -279,7 +279,7 @@ namespace WpfApp1
             //    rframe.Children.Remove(uncachedChild);
             //}
 
-            //this.Title = e.OldValue + " | " + e.NewValue + " rframe left border " + ( rframe.Margin.Left) + " | rb " + rframe.Margin.Left;
+            this.Title = e.OldValue + " | " + e.NewValue + " rframe left border " + ( rframe.Margin.Left) + " | rb " + rframe.Margin.Left;
 
             //rframe.CacheMode = new BitmapCache();
         }
