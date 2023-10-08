@@ -162,7 +162,7 @@ namespace WpfApp1
                 Canvas.SetLeft((UIElement)child, x + delta);
                 x = Canvas.GetLeft(child);
 
-                this.Title = " X = " + x + " New val  = " + newVal; 
+               // this.Title = " X = " + x + " New val  = " + newVal; 
                 
 
                 //if (x+ rframe.Margin.Left < rframe.Margin.Left)
@@ -174,8 +174,10 @@ namespace WpfApp1
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
 
-                    
-                   // this.Title = oldVal.ToString();
+                
+                    //Trace.WriteLine("EXIT : X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Return at " + leftstack.Peek().Item4);
+
+                    // this.Title = oldVal.ToString();
 
                 }
                 else
@@ -187,10 +189,10 @@ namespace WpfApp1
                     temp.Add(child);
 
                     // надо понять что тут применить чтобы правую границу правильно выставить как на видосе
-                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), oldVal));
+                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), newVal - (x - 600)));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
-                    Trace.WriteLine("EXIT : X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Return at " + rightstack.Peek().Item4);
+                    //Trace.WriteLine("EXIT : X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Return at " + rightstack.Peek().Item4);
                     //this.Title = oldVal.ToString();
                 }
 
@@ -260,7 +262,8 @@ namespace WpfApp1
 
                         UIetemp.Visibility = Visibility.Visible;
                         UIetemp.CacheMode = new BitmapCache();
-
+                        //double x = Canvas.GetLeft(UIetemp);
+                       // Trace.WriteLine("ENTER: X " + x + "item4 = " + resulta.Item4 + " | newval = " + newVal);
                         //
                     }
                     else
@@ -296,8 +299,8 @@ namespace WpfApp1
                         //Canvas.SetLeft((UIElement)UIetemp, Canvas.GetLeft(UIetemp) + delta);
                         //UIetemp.Visibility = Visibility.Visible;
                         //UIetemp.CacheMode = new BitmapCache();
-                        double x = Canvas.GetLeft(UIetemp);
-                        Trace.WriteLine("ENTER: X " + x + "item4 = " + resulta.Item4 + " | newval = " + newVal);
+                        //double x = Canvas.GetLeft(UIetemp);
+                        //Trace.WriteLine("ENTER: X " + x + "item4 = " + resulta.Item4 + " | newval = " + newVal);
 
                     }
                     else
