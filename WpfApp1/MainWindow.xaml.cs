@@ -147,63 +147,7 @@ namespace WpfApp1
             //    }
             //}
 
-            // w h x
-            (double, double, Color, double) resulta = (0, 0, Color.FromArgb(0, 0, 0, 0), 0);
-
-            while (leftstack.TryPeek(out resulta))
-            {
-
-                if (resulta.Item4 < newVal)
-                {
-                    (double, double, Color, double) result = leftstack.Pop();
-                    Rectangle UIetemp = new Rectangle();
-                    UIetemp.Width = result.Item1;
-                    UIetemp.Height = 15;
-                    UIetemp.Fill = new SolidColorBrush(result.Item3);
-                    //this.Title = result.ToString();
-                    Canvas.SetLeft(UIetemp, 0 + newVal - resulta.Item4);
-                    Canvas.SetTop(UIetemp, result.Item2);
-                    rframe.Children.Add(UIetemp);
-
-                    UIetemp.Visibility = Visibility.Visible;
-                    UIetemp.CacheMode = new BitmapCache();
-
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            while (rightstack.TryPeek(out resulta))
-            {
-                if (resulta.Item4 > newVal)
-                {
-                    (double, double, Color, double) result = rightstack.Pop();
-
-                    Rectangle UIetemp = new Rectangle();
-                    UIetemp.Width = result.Item1;
-                    UIetemp.Height = 15;
-                    UIetemp.Fill = new SolidColorBrush(result.Item3);
-
-                    Canvas.SetLeft(UIetemp, 588 - newVal + resulta.Item4);
-                    Canvas.SetTop(UIetemp, result.Item2);
-                    UIetemp.Visibility = Visibility.Visible;
-                    UIetemp.CacheMode = new BitmapCache();
-
-                    rframe.Children.Add(UIetemp);
-                    //UIElement UIetemp = rightstack.Pop().Item1;
-                    //rframe.Children.Add(UIetemp);
-                    //Canvas.SetLeft((UIElement)UIetemp, Canvas.GetLeft(UIetemp) + delta);
-                    //UIetemp.Visibility = Visibility.Visible;
-                    //UIetemp.CacheMode = new BitmapCache();
-
-                }
-                else
-                {
-                    break;
-                }
-            }
+            
 
             foreach (UIElement child in rframe.Children)
             {
@@ -219,20 +163,20 @@ namespace WpfApp1
                 
 
                 //if (x+ rframe.Margin.Left < rframe.Margin.Left)
-                if (x < 0)
+                if (x < -1)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
                     temp.Add(child);
-                    leftstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255,0,0,0), oldVal + x));
+                    leftstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255,0,0,0), newVal - x));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
 
-                    Trace.WriteLine("X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Border " + leftstack.Peek().Item4);
+                    Trace.WriteLine("X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Return at " + leftstack.Peek().Item4);
                     this.Title = oldVal.ToString();
 
                 }
                 else
-                if (x > 588)
+                if (x > 589)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
 
@@ -286,7 +230,66 @@ namespace WpfApp1
                 rframe.Children.Remove(child);
             }
 
-            
+            // w h x
+            (double, double, Color, double) resulta = (0, 0, Color.FromArgb(0, 0, 0, 0), 0);
+
+            while (leftstack.TryPeek(out resulta))
+            {
+
+                if (resulta.Item4 <= newVal)
+                {
+                    (double, double, Color, double) result = leftstack.Pop();
+                    Rectangle UIetemp = new Rectangle();
+                    UIetemp.Width = result.Item1;
+                    UIetemp.Height = 15;
+                    UIetemp.Fill = new SolidColorBrush(result.Item3);
+                    //this.Title = result.ToString();
+                    Canvas.SetLeft(UIetemp, 0 + newVal - resulta.Item4);
+                    Canvas.SetTop(UIetemp, result.Item2);
+                    rframe.Children.Add(UIetemp);
+
+                    UIetemp.Visibility = Visibility.Visible;
+                    UIetemp.CacheMode = new BitmapCache();
+
+                    Trace.WriteLine("X " + (newVal - resulta.Item4) + " | Old value " + oldVal + " + New Val " + newVal + " | 0 + " + (resulta.Item4 - newVal));
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            while (rightstack.TryPeek(out resulta))
+            {
+                if (resulta.Item4 >= newVal)
+                {
+                    (double, double, Color, double) result = rightstack.Pop();
+
+                    Rectangle UIetemp = new Rectangle();
+                    UIetemp.Width = result.Item1;
+                    UIetemp.Height = 15;
+                    UIetemp.Fill = new SolidColorBrush(result.Item3);
+
+                    Canvas.SetLeft(UIetemp, 588 - newVal + resulta.Item4);
+                    Canvas.SetTop(UIetemp, result.Item2);
+                    UIetemp.Visibility = Visibility.Visible;
+                    UIetemp.CacheMode = new BitmapCache();
+
+                    rframe.Children.Add(UIetemp);
+                    //UIElement UIetemp = rightstack.Pop().Item1;
+                    //rframe.Children.Add(UIetemp);
+                    //Canvas.SetLeft((UIElement)UIetemp, Canvas.GetLeft(UIetemp) + delta);
+                    //UIetemp.Visibility = Visibility.Visible;
+                    //UIetemp.CacheMode = new BitmapCache();
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+
 
             rframe.CacheMode = new BitmapCache();
             temp.Clear();
