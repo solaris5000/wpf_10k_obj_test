@@ -8,7 +8,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid x:Name="basegrid" Margin="0,0,10,10">
-            <ScrollBar x:Name="sbx" HorizontalAlignment="Center" Margin="0,353,0,0" VerticalAlignment="Top" Orientation="Horizontal" Width="790" ValueChanged="ScrollBar_ValueChanged" SmallChange="1" Maximum="700" Minimum="-700" Height="71"/>
+            <ScrollBar x:Name="sbx" HorizontalAlignment="Center" Margin="0,353,0,0" VerticalAlignment="Top" Orientation="Horizontal" Width="790" ValueChanged="ScrollBar_ValueChanged" SmallChange="15" Maximum="700" Minimum="-700" Height="71"/>
             <Button x:Name="generator" Content="Button" HorizontalAlignment="Left" Margin="646,82,0,0" VerticalAlignment="Top" Click="generator_Click" Width="106"/>
             <TextBox x:Name="textbox1" HorizontalAlignment="Left" Margin="595,37,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="120"/>
             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Center" Height="190" VerticalAlignment="Center" Width="588"/>

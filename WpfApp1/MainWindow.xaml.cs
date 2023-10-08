@@ -49,6 +49,8 @@ namespace WpfApp1
             uncached.Clear();
             int generation_count = 1;
 
+            sbx.Value = 0;
+
 
             // Использовать Avl дерево для кэширования элементов чтобы потом упорядочено их пихать в стек
             //Dictionary<double, (double, double, Color, double)> tmpR = new Dictionary<double, (double, double, Color, double)>();
@@ -68,7 +70,7 @@ namespace WpfApp1
                 rect.Fill = new SolidColorBrush(Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)));
 
                 //double x = rand.Next(-4100, 4100);
-                double x = rand.Next(-100, 400);
+                double x = 100;
                 double y = rand.Next(0, 100);
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
@@ -236,6 +238,17 @@ namespace WpfApp1
             while (leftstack.TryPeek(out resulta))
             {
 
+                // проблема где-то здесь
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
+                //
                 if (resulta.Item4 <= newVal)
                 {
                     (double, double, Color, double) result = leftstack.Pop();
@@ -244,14 +257,15 @@ namespace WpfApp1
                     UIetemp.Height = 15;
                     UIetemp.Fill = new SolidColorBrush(result.Item3);
                     //this.Title = result.ToString();
-                    Canvas.SetLeft(UIetemp, 0 + newVal - resulta.Item4);
+                    Canvas.SetLeft(UIetemp, newVal - resulta.Item4);
                     Canvas.SetTop(UIetemp, result.Item2);
+                    double x = Canvas.GetLeft(UIetemp);
                     rframe.Children.Add(UIetemp);
 
                     UIetemp.Visibility = Visibility.Visible;
                     UIetemp.CacheMode = new BitmapCache();
 
-                    Trace.WriteLine("X " + (newVal - resulta.Item4) + " | Old value " + oldVal + " + New Val " + newVal + " | 0 + " + (resulta.Item4 - newVal));
+                    Trace.WriteLine("X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | 0 + " + (resulta.Item4 + newVal));
                 }
                 else
                 {
