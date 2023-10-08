@@ -69,8 +69,8 @@ namespace WpfApp1
                 rect.Height = 15;
                 rect.Fill = new SolidColorBrush(Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)));
 
-                //double x = rand.Next(-4100, 4100);
-                double x = 500;
+                double x = rand.Next(-4100, 4100);
+                //double x = 500;
                 double y = rand.Next(0, 100);
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
@@ -88,10 +88,10 @@ namespace WpfApp1
                     
                 }
                 else
-                if (x > 588)
+                if (x + rect.Width > 600)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
-                    tmpR.Insert(-1 * x, (rect.Width, y, Color.FromArgb(255, 110, 110, 110), -1 * x + 588));
+                    tmpR.Insert(-1 * x, (rect.Width, y, Color.FromArgb(255, 110, 110, 110), -1 * x + rect.Width + 600));
 
                 }
                 else
@@ -162,8 +162,9 @@ namespace WpfApp1
                 Canvas.SetLeft((UIElement)child, x + delta);
                 x = Canvas.GetLeft(child);
 
-               // this.Title = " X = " + x + " New val  = " + newVal; 
-                
+
+                // this.Title = " X = " + x + " New val  = " + newVal; 
+                double xw = child.RenderSize.Width;
 
                 //if (x+ rframe.Margin.Left < rframe.Margin.Left)
                 if (x < -1)
@@ -181,15 +182,15 @@ namespace WpfApp1
 
                 }
                 else
-                if (x > 600)
+                if (x + xw > 600)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
 
-
+                    
                     temp.Add(child);
 
                     // надо понять что тут применить чтобы правую границу правильно выставить как на видосе
-                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), newVal - (x - 600)));
+                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), newVal - (x + xw - 600)));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
                     //Trace.WriteLine("EXIT : X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Return at " + rightstack.Peek().Item4);
@@ -288,7 +289,7 @@ namespace WpfApp1
                         UIetemp.Height = 15;
                         UIetemp.Fill = new SolidColorBrush(result.Item3);
 
-                        Canvas.SetLeft(UIetemp, 600 + newVal - resulta.Item4);
+                        Canvas.SetLeft(UIetemp, 600 + newVal - resulta.Item4 - UIetemp.Width);
                         Canvas.SetTop(UIetemp, result.Item2);
                         UIetemp.Visibility = Visibility.Visible;
                         UIetemp.CacheMode = new BitmapCache();
