@@ -67,7 +67,8 @@ namespace WpfApp1
                 rect.Height = 15;
                 rect.Fill = new SolidColorBrush(Color.FromArgb(255, (byte)rand.Next(0, 255), (byte)rand.Next(0, 255), (byte)rand.Next(0, 255)));
 
-                double x = rand.Next(-4100, 4100);
+                //double x = rand.Next(-4100, 4100);
+                double x = rand.Next(-100, 400);
                 double y = rand.Next(0, 100);
                 Canvas.SetLeft(rect, x);
                 Canvas.SetTop(rect, y);
@@ -76,7 +77,7 @@ namespace WpfApp1
 
 
 
-                Trace.WriteLine(x);
+                //Trace.WriteLine(x);
                 // Вот в этом месте сразу сделать кэширование в стеки
                 if (x < 0)
                 {
@@ -115,13 +116,17 @@ namespace WpfApp1
         private void ScrollBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
 
-            rframe.CacheMode = null;
-            double delta = (e.NewValue - e.OldValue);
+            sbx.Value = double.Round(sbx.Value);
 
-            
+            int newVal = (int)double.Round(e.NewValue);
+            int oldVal = (int)double.Round(e.OldValue);
+            rframe.CacheMode = null;
+            double delta = (newVal - oldVal);
+
+
 
             //Canvas.SetLeft(rframe, e.NewValue);
-            
+
             //foreach (UIElement uncachedChild in uncached.Values)
             //{
             //    double x = Canvas.GetLeft(uncachedChild) + delta;
@@ -142,8 +147,67 @@ namespace WpfApp1
             //    }
             //}
 
+            // w h x
+            (double, double, Color, double) resulta = (0, 0, Color.FromArgb(0, 0, 0, 0), 0);
+
+            while (leftstack.TryPeek(out resulta))
+            {
+
+                if (resulta.Item4 < newVal)
+                {
+                    (double, double, Color, double) result = leftstack.Pop();
+                    Rectangle UIetemp = new Rectangle();
+                    UIetemp.Width = result.Item1;
+                    UIetemp.Height = 15;
+                    UIetemp.Fill = new SolidColorBrush(result.Item3);
+                    //this.Title = result.ToString();
+                    Canvas.SetLeft(UIetemp, 0 + newVal - resulta.Item4);
+                    Canvas.SetTop(UIetemp, result.Item2);
+                    rframe.Children.Add(UIetemp);
+
+                    UIetemp.Visibility = Visibility.Visible;
+                    UIetemp.CacheMode = new BitmapCache();
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            while (rightstack.TryPeek(out resulta))
+            {
+                if (resulta.Item4 > newVal)
+                {
+                    (double, double, Color, double) result = rightstack.Pop();
+
+                    Rectangle UIetemp = new Rectangle();
+                    UIetemp.Width = result.Item1;
+                    UIetemp.Height = 15;
+                    UIetemp.Fill = new SolidColorBrush(result.Item3);
+
+                    Canvas.SetLeft(UIetemp, 588 - newVal + resulta.Item4);
+                    Canvas.SetTop(UIetemp, result.Item2);
+                    UIetemp.Visibility = Visibility.Visible;
+                    UIetemp.CacheMode = new BitmapCache();
+
+                    rframe.Children.Add(UIetemp);
+                    //UIElement UIetemp = rightstack.Pop().Item1;
+                    //rframe.Children.Add(UIetemp);
+                    //Canvas.SetLeft((UIElement)UIetemp, Canvas.GetLeft(UIetemp) + delta);
+                    //UIetemp.Visibility = Visibility.Visible;
+                    //UIetemp.CacheMode = new BitmapCache();
+
+                }
+                else
+                {
+                    break;
+                }
+            }
+
             foreach (UIElement child in rframe.Children)
             {
+
                 //this.Title = "123";
 
                 double x = Canvas.GetLeft(child);
@@ -151,31 +215,39 @@ namespace WpfApp1
                 Canvas.SetLeft((UIElement)child, x + delta);
                 x = Canvas.GetLeft(child);
 
+                
+                
+
                 //if (x+ rframe.Margin.Left < rframe.Margin.Left)
                 if (x < 0)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
-                    
                     temp.Add(child);
-                    leftstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255,0,0,0), e.OldValue));
+                    leftstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255,0,0,0), oldVal + x));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
 
-                    this.Title = e.OldValue.ToString();
+                    Trace.WriteLine("X " + x + " | Old value " + oldVal + " + New Val " + newVal + " | Border " + leftstack.Peek().Item4);
+                    this.Title = oldVal.ToString();
 
                 }
                 else
                 if (x > 588)
                 {
                     // Если оно ушло влево, надо в левую очередь его спрятать и удалить из дочерних эл-тов
-                    
+
+                    double diff = x - 588;
+
                     temp.Add(child);
-                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), e.OldValue));
+                    rightstack.Push((child.RenderSize.Width, Canvas.GetTop(child), Color.FromArgb(255, 110, 110, 110), newVal - diff));
                     child.Visibility = Visibility.Collapsed;
                     child.CacheMode = null;
-                    //this.Title = e.OldValue.ToString();
+                    Trace.WriteLine("X " + x + " | Old value " + oldVal + " + New Val " + newVal);
+                    //this.Title = oldVal.ToString();
                 }
 
+
+                
                 //if (child.CacheMode == null)
                 //{
                 //    //child.CacheMode = new BitmapCache();
@@ -214,62 +286,7 @@ namespace WpfApp1
                 rframe.Children.Remove(child);
             }
 
-            // w h x
-            (double, double, Color, double) resulta = (0, 0, Color.FromArgb(0,0,0,0), 0);
-
-            while(leftstack.TryPeek(out resulta))
-            {
-                
-                if (resulta.Item4 < e.NewValue)
-                {
-                    (double, double, Color, double) result = leftstack.Pop();
-                    Rectangle UIetemp = new Rectangle();
-                    UIetemp.Width = result.Item1;
-                    UIetemp.Height = 15;
-                    UIetemp.Fill = new SolidColorBrush(result.Item3);
-                    //this.Title = result.ToString();
-                    Canvas.SetLeft(UIetemp, 0+ e.NewValue - resulta.Item4);
-                    Canvas.SetTop(UIetemp, result.Item2);
-                    rframe.Children.Add(UIetemp);
-
-                    UIetemp.Visibility = Visibility.Visible;
-                    UIetemp.CacheMode = new BitmapCache();
-
-                } 
-                else {
-                    break;
-                }
-            }
-
-            while (rightstack.TryPeek(out resulta))
-            {
-                if (resulta.Item4 > e.NewValue)
-                {
-                    (double, double, Color, double) result = rightstack.Pop();
-
-                    Rectangle UIetemp = new Rectangle();
-                    UIetemp.Width = result.Item1;
-                    UIetemp.Height = 15;
-                    UIetemp.Fill = new SolidColorBrush(result.Item3);
-
-                    Canvas.SetLeft(UIetemp, 588- e.NewValue + resulta.Item4);
-                    Canvas.SetTop(UIetemp, result.Item2);
-                    UIetemp.Visibility = Visibility.Visible;
-                    UIetemp.CacheMode = new BitmapCache();
-
-                    rframe.Children.Add(UIetemp);
-                    //UIElement UIetemp = rightstack.Pop().Item1;
-                    //rframe.Children.Add(UIetemp);
-                    //Canvas.SetLeft((UIElement)UIetemp, Canvas.GetLeft(UIetemp) + delta);
-                    //UIetemp.Visibility = Visibility.Visible;
-                    //UIetemp.CacheMode = new BitmapCache();
-
-                }
-                else
-                {
-                    break;
-                }
-            }
+            
 
             rframe.CacheMode = new BitmapCache();
             temp.Clear();
@@ -279,7 +296,7 @@ namespace WpfApp1
             //    rframe.Children.Remove(uncachedChild);
             //}
 
-            this.Title = e.OldValue + " | " + e.NewValue + " rframe left border " + ( rframe.Margin.Left) + " | rb " + rframe.Margin.Left;
+            this.Title = oldVal + " | " + newVal + " rframe left border " + ( rframe.Margin.Left) + " | rb " + rframe.Margin.Left;
 
             //rframe.CacheMode = new BitmapCache();
         }
